@@ -800,7 +800,7 @@
                 <i class="fas fa-clock"></i>
                 <span>Disponibilités</span>
             </a>
-            <a href="" class="nav-item">
+            <a href="departments" class="nav-item">
                 <i class="fas fa-hospital"></i>
                 <span>Départements</span>
             </a>
