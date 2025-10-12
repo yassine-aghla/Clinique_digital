@@ -1,5 +1,6 @@
 package org.example.clinique_digital.Servlets;
 
+import org.example.clinique_digital.entities.Role;
 import org.example.clinique_digital.entities.User;
 import org.example.clinique_digital.services.AuthService;
 import jakarta.servlet.ServletException;

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - Clinique Management</title>
+    <title>Dashboard - MediPlan</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         * {
@@ -14,23 +14,28 @@
         }
 
         :root {
-            --primary: #6366f1;
-            --primary-dark: #4f46e5;
-            --secondary: #10b981;
-            --danger: #ef4444;
-            --warning: #f59e0b;
+            --primary: #2c7fb8;
+            --primary-dark: #1d5a82;
+            --secondary: #7fcdbb;
+            --accent: #edf8b1;
+            --light: #f7f7f7;
+            --dark: #333;
+            --success: #2ca25f;
+            --warning: #fec44f;
+            --danger: #e34a33;
             --info: #3b82f6;
-            --dark: #0f172a;
             --gray: #64748b;
-            --light: #f1f5f9;
             --white: #ffffff;
             --sidebar-width: 280px;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
         }
 
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: #f8fafc;
             min-height: 100vh;
+            line-height: 1.6;
         }
 
         /* Sidebar */
@@ -40,7 +45,7 @@
             top: 0;
             width: var(--sidebar-width);
             height: 100vh;
-            background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+            background: linear-gradient(180deg, var(--primary) 0%, var(--primary-dark) 100%);
             padding: 24px 0;
             overflow-y: auto;
             z-index: 1000;
@@ -49,7 +54,7 @@
 
         .sidebar-logo {
             padding: 0 24px 24px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
             margin-bottom: 24px;
         }
 
@@ -62,7 +67,7 @@
         .logo-icon {
             width: 48px;
             height: 48px;
-            background: linear-gradient(135deg, var(--primary), #8b5cf6);
+            background: rgba(255, 255, 255, 0.2);
             border-radius: 12px;
             display: flex;
             align-items: center;
@@ -79,7 +84,7 @@
         }
 
         .logo-text p {
-            color: #94a3b8;
+            color: rgba(255, 255, 255, 0.8);
             font-size: 12px;
         }
 
@@ -87,11 +92,11 @@
         .sidebar-user {
             padding: 0 24px 24px;
             margin-bottom: 24px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
         }
 
         .user-card {
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(255, 255, 255, 0.1);
             border-radius: 12px;
             padding: 16px;
             display: flex;
@@ -129,10 +134,10 @@
             text-transform: uppercase;
         }
 
-        .role-admin { background: rgba(239, 68, 68, 0.2); color: #fca5a5; }
-        .role-doctor { background: rgba(59, 130, 246, 0.2); color: #93c5fd; }
-        .role-patient { background: rgba(16, 185, 129, 0.2); color: #6ee7b7; }
-        .role-staff { background: rgba(245, 158, 11, 0.2); color: #fcd34d; }
+        .role-admin { background: rgba(255, 255, 255, 0.3); color: white; }
+        .role-doctor { background: rgba(124, 205, 187, 0.3); color: white; }
+        .role-patient { background: rgba(237, 248, 177, 0.3); color: var(--dark); }
+        .role-staff { background: rgba(254, 196, 79, 0.3); color: var(--dark); }
 
         /* Navigation Menu */
         .nav-menu {
@@ -144,7 +149,7 @@
         }
 
         .nav-section-title {
-            color: #64748b;
+            color: rgba(255, 255, 255, 0.7);
             font-size: 11px;
             font-weight: 700;
             text-transform: uppercase;
@@ -159,21 +164,21 @@
             padding: 12px 16px;
             margin-bottom: 4px;
             border-radius: 10px;
-            color: #cbd5e1;
+            color: rgba(255, 255, 255, 0.9);
             text-decoration: none;
-            transition: all 0.3s;
+            transition: var(--transition);
             cursor: pointer;
         }
 
         .nav-item:hover {
-            background: rgba(255, 255, 255, 0.08);
+            background: rgba(255, 255, 255, 0.15);
             color: white;
         }
 
         .nav-item.active {
-            background: linear-gradient(135deg, var(--primary), #8b5cf6);
+            background: rgba(255, 255, 255, 0.2);
             color: white;
-            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
         }
 
         .nav-item i {
@@ -243,7 +248,7 @@
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: var(--transition);
             position: relative;
         }
 
@@ -285,7 +290,7 @@
             border-radius: 16px;
             padding: 24px;
             border: 1px solid #e2e8f0;
-            transition: all 0.3s;
+            transition: var(--transition);
             position: relative;
             overflow: hidden;
         }
@@ -302,13 +307,13 @@
         }
 
         .stat-card.primary::before { background: var(--primary); }
-        .stat-card.success::before { background: var(--secondary); }
+        .stat-card.success::before { background: var(--success); }
         .stat-card.warning::before { background: var(--warning); }
         .stat-card.danger::before { background: var(--danger); }
 
         .stat-card:hover {
             transform: translateY(-4px);
-            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
+            box-shadow: var(--shadow);
             border-color: var(--primary);
         }
 
@@ -330,12 +335,12 @@
         }
 
         .stat-card.primary .stat-icon {
-            background: linear-gradient(135deg, #ddd6fe, #e0e7ff);
+            background: linear-gradient(135deg, #e0f2fe, #bae6fd);
             color: var(--primary);
         }
         .stat-card.success .stat-icon {
             background: linear-gradient(135deg, #d1fae5, #a7f3d0);
-            color: var(--secondary);
+            color: var(--success);
         }
         .stat-card.warning .stat-icon {
             background: linear-gradient(135deg, #fed7aa, #fde68a);
@@ -393,6 +398,7 @@
             border-radius: 16px;
             padding: 24px;
             border: 1px solid #e2e8f0;
+            box-shadow: var(--shadow);
         }
 
         .card-header {
@@ -413,7 +419,7 @@
         .card-title i {
             width: 40px;
             height: 40px;
-            background: linear-gradient(135deg, #ddd6fe, #e0e7ff);
+            background: linear-gradient(135deg, #e0f2fe, #bae6fd);
             color: var(--primary);
             border-radius: 10px;
             display: flex;
@@ -430,14 +436,14 @@
 
         .btn-primary {
             padding: 10px 20px;
-            background: linear-gradient(135deg, var(--primary), #8b5cf6);
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             color: white;
             border: none;
             border-radius: 10px;
             font-size: 14px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: var(--transition);
             display: inline-flex;
             align-items: center;
             gap: 8px;
@@ -446,7 +452,7 @@
 
         .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 16px rgba(99, 102, 241, 0.3);
+            box-shadow: 0 8px 16px rgba(44, 127, 184, 0.3);
         }
 
         /* Appointments */
@@ -463,7 +469,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            transition: all 0.3s;
+            transition: var(--transition);
             border: 1px solid #e2e8f0;
         }
 
@@ -542,7 +548,7 @@
             display: flex;
             align-items: center;
             gap: 16px;
-            transition: all 0.3s;
+            transition: var(--transition);
             cursor: pointer;
             text-decoration: none;
             border: 1px solid #e2e8f0;
@@ -566,12 +572,12 @@
         }
 
         .action-primary {
-            background: linear-gradient(135deg, #ddd6fe, #c7d2fe);
+            background: linear-gradient(135deg, #e0f2fe, #bae6fd);
             color: var(--primary);
         }
         .action-success {
             background: linear-gradient(135deg, #d1fae5, #a7f3d0);
-            color: var(--secondary);
+            color: var(--success);
         }
         .action-warning {
             background: linear-gradient(135deg, #fed7aa, #fde68a);
@@ -626,6 +632,11 @@
             font-size: 18px;
             flex-shrink: 0;
         }
+
+        .activity-primary { background: #e0f2fe; color: var(--primary); }
+        .activity-success { background: #d1fae5; color: var(--success); }
+        .activity-warning { background: #fed7aa; color: var(--warning); }
+        .activity-danger { background: #fecaca; color: var(--danger); }
 
         .activity-content {
             flex: 1;
@@ -742,11 +753,11 @@
     <div class="sidebar-logo">
         <div class="logo-content">
             <div class="logo-icon">
-                <i class="fas fa-heartbeat"></i>
+                <i class="fas fa-hospital-alt"></i>
             </div>
             <div class="logo-text">
-                <h2>MediCare</h2>
-                <p>Clinique System</p>
+                <h2>MediPlan</h2>
+                <p>Système Clinique</p>
             </div>
         </div>
     </div>
@@ -766,7 +777,7 @@
             <div class="nav-section-title">Principal</div>
             <a href="" class="nav-item active">
                 <i class="fas fa-home"></i>
-                <span>Dashboard</span>
+                <span>Tableau de Bord</span>
             </a>
             <a href="" class="nav-item">
                 <i class="fas fa-calendar-alt"></i>
@@ -827,7 +838,7 @@
     <div class="topbar">
         <div class="topbar-left">
             <h1>Tableau de Bord</h1>
-            <p>Vue d'ensemble de la clinique</p>
+            <p>Vue d'ensemble de la clinique MediPlan</p>
         </div>
         <div class="topbar-right">
             <button class="menu-toggle" onclick="toggleSidebar()">
@@ -913,61 +924,173 @@
 
         <!-- Main Grid -->
         <div class="main-grid">
-            <!-- Appointments Card -->
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-title">
-                        <i class="fas fa-calendar-alt"></i>
-                        <h2>Rendez-vous Récents</h2>
+            <!-- Left Column -->
+            <div class="left-column">
+                <!-- Appointments Card -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <i class="fas fa-calendar-alt"></i>
+                            <h2>Rendez-vous Récents</h2>
+                        </div>
+                        <a href="" class="btn-primary">
+                            <i class="fas fa-plus"></i> Nouveau
+                        </a>
                     </div>
-                    <a href="" class="btn-primary">
-                        <i class="fas fa-plus"></i> Nouveau
-                    </a>
+                    <div class="appointments-list">
+                        <div class="appointment-item">
+                            <div class="appointment-info">
+                                <div class="appointment-time">
+                                    <div class="time">09:00</div>
+                                    <div class="date">10 Oct</div>
+                                </div>
+                                <div class="appointment-details">
+                                    <h4>Mohammed Alami</h4>
+                                    <p><i class="fas fa-user-md"></i> Dr. Benali - Cardiologie</p>
+                                </div>
+                            </div>
+                            <span class="status-badge status-planned">Planifié</span>
+                        </div>
+                        <div class="appointment-item">
+                            <div class="appointment-info">
+                                <div class="appointment-time">
+                                    <div class="time">10:30</div>
+                                    <div class="date">10 Oct</div>
+                                </div>
+                                <div class="appointment-details">
+                                    <h4>Fatima Zahra</h4>
+                                    <p><i class="fas fa-user-md"></i> Dr. Idrissi - Dermatologie</p>
+                                </div>
+                            </div>
+                            <span class="status-badge status-done">Terminé</span>
+                        </div>
+                        <div class="appointment-item">
+                            <div class="appointment-info">
+                                <div class="appointment-time">
+                                    <div class="time">14:00</div>
+                                    <div class="date">11 Oct</div>
+                                </div>
+                                <div class="appointment-details">
+                                    <h4>Hamza Boumnjel</h4>
+                                    <p><i class="fas fa-user-md"></i> Dr. Aghlla - Dentiste</p>
+                                </div>
+                            </div>
+                            <span class="status-badge status-planned">Planifié</span>
+                        </div>
+                    </div>
                 </div>
-                <div class="appointments-list">
-                    <div class="appointment-item">
-                        <div class="appointment-info">
-                            <div class="appointment-time">
-                                <div class="time">09:00</div>
-                                <div class="date">10 Oct</div>
-                            </div>
-                            <div class="appointment-details">
-                                <h4>Mohammed Alami</h4>
-                                <p><i class="fas fa-user-md"></i> Dr. Benali - Cardiologie</p>
-                            </div>
+            </div>
+
+            <!-- Right Column -->
+            <div class="right-column">
+                <!-- Quick Actions -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <i class="fas fa-bolt"></i>
+                            <h2>Actions Rapides</h2>
                         </div>
-                        <span class="status-badge status-planned">Planifié</span>
                     </div>
-                    <div class="appointment-item">
-                        <div class="appointment-info">
-                            <div class="appointment-time">
-                                <div class="time">10:30</div>
-                                <div class="date">10 Oct</div>
+                    <div class="quick-actions">
+                        <a href="#" class="quick-action-btn">
+                            <div class="quick-action-icon action-primary">
+                                <i class="fas fa-user-plus"></i>
                             </div>
-                            <div class="appointment-details">
-                                <h4>Fatima Zahra</h4>
-                                <p><i class="fas fa-user-md"></i> Dr. Idrissi - Dermatologie</p>
+                            <div class="quick-action-text">
+                                <h4>Nouveau Patient</h4>
+                                <p>Ajouter un patient</p>
                             </div>
-                        </div>
-                        <span class="status-badge status-done">Terminé</span>
+                        </a>
+                        <a href="#" class="quick-action-btn">
+                            <div class="quick-action-icon action-success">
+                                <i class="fas fa-calendar-plus"></i>
+                            </div>
+                            <div class="quick-action-text">
+                                <h4>Planifier RDV</h4>
+                                <p>Créer un rendez-vous</p>
+                            </div>
+                        </a>
+                        <a href="#" class="quick-action-btn">
+                            <div class="quick-action-icon action-warning">
+                                <i class="fas fa-file-medical"></i>
+                            </div>
+                            <div class="quick-action-text">
+                                <h4>Notes Médicales</h4>
+                                <p>Rédiger une note</p>
+                            </div>
+                        </a>
+                        <a href="#" class="quick-action-btn">
+                            <div class="quick-action-icon action-info">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <div class="quick-action-text">
+                                <h4>Statistiques</h4>
+                                <p>Voir les rapports</p>
+                            </div>
+                        </a>
                     </div>
-                    <div class="appointment-item">
-                        <div class="appointment-info">
-                            <div class="appointment-time">
-                                <div class="time">14:00</div>
-                                <div class="date">11 Oct</div>
+                </div>
+
+                <!-- Activity Feed -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <i class="fas fa-list-alt"></i>
+                            <h2>Activité Récente</h2>
+                        </div>
+                    </div>
+                    <div class="activity-feed">
+                        <div class="activity-item">
+                            <div class="activity-icon activity-primary">
+                                <i class="fas fa-user-plus"></i>
                             </div>
-                            <div class="appointment-details">
-                                <h4>Hamza boumnjel</h4>
-                                <p><i class="fas fa-user-md"></i> Dr. aghlla - Dentist</p>
+                            <div class="activity-content">
+                                <h4>Nouveau patient enregistré</h4>
+                                <p>Karim Benjelloun a créé son compte patient</p>
+                                <div class="activity-time">Il y a 5 minutes</div>
                             </div>
                         </div>
-                        <span class="status-badge status-done">Pending</span>
+                        <div class="activity-item">
+                            <div class="activity-icon activity-success">
+                                <i class="fas fa-calendar-check"></i>
+                            </div>
+                            <div class="activity-content">
+                                <h4>Rendez-vous confirmé</h4>
+                                <p>Dr. Idrissi a confirmé le rendez-vous de 14:30</p>
+                                <div class="activity-time">Il y a 1 heure</div>
+                            </div>
+                        </div>
+                        <div class="activity-item">
+                            <div class="activity-icon activity-warning">
+                                <i class="fas fa-file-medical-alt"></i>
+                            </div>
+                            <div class="activity-content">
+                                <h4>Note médicale ajoutée</h4>
+                                <p>Dr. Benali a rédigé une note pour Leila Mansouri</p>
+                                <div class="activity-time">Il y a 2 heures</div>
+                            </div>
+                        </div>
+                        <div class="activity-item">
+                            <div class="activity-icon activity-danger">
+                                <i class="fas fa-times-circle"></i>
+                            </div>
+                            <div class="activity-content">
+                                <h4>Rendez-vous annulé</h4>
+                                <p>Youssef Alami a annulé son rendez-vous de demain</p>
+                                <div class="activity-time">Il y a 3 heures</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+    function toggleSidebar() {
+        document.querySelector('.sidebar').classList.toggle('active');
+    }
+</script>
 </body>
 </html>
