@@ -5,6 +5,7 @@
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
         <class>org.example.clinique_digital.entities.User</class>
         <class>org.example.clinique_digital.entities.Department</class>
+        <class>org.example.clinique_digital.entities.Specialty</class>
 
         <properties>
             <!-- Connexion PostgreSQL -->
