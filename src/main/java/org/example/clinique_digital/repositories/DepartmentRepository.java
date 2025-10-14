@@ -16,7 +16,7 @@ public class DepartmentRepository {
 
         if (department.getId() == null) {
             entityManager.persist(department);
-            entityManager.flush(); // Force l'insertion immédiate
+            entityManager.flush();
             System.out.println("➡️ Département persisté avec ID: " + department.getId());
             return department;
         } else {
@@ -28,7 +28,7 @@ public class DepartmentRepository {
 
     public Optional<Department> findById(Long id) {
         Department department = entityManager.find(Department.class, id);
-        System.out.println("🔍 Recherche département ID " + id + ": " + (department != null ? "trouvé" : "non trouvé"));
+        System.out.println("Recherche département ID " + id + ": " + (department != null ? "trouvé" : "non trouvé"));
         return Optional.ofNullable(department);
     }
 
@@ -36,7 +36,7 @@ public class DepartmentRepository {
         TypedQuery<Department> query = entityManager.createQuery(
                 "SELECT d FROM Department d ORDER BY d.name", Department.class);
         List<Department> results = query.getResultList();
-        System.out.println("📋 " + results.size() + " départements trouvés en base");
+        System.out.println(results.size() + " départements trouvés en base");
         return results;
     }
 
@@ -47,10 +47,10 @@ public class DepartmentRepository {
 
         try {
             Department result = query.getSingleResult();
-            System.out.println("🔍 Département trouvé avec code " + code + ": " + result.getName());
+            System.out.println("Département trouvé avec code " + code + ": " + result.getName());
             return Optional.of(result);
         } catch (Exception e) {
-            System.out.println("🔍 Aucun département trouvé avec code: " + code);
+            System.out.println("Aucun département trouvé avec code: " + code);
             return Optional.empty();
         }
     }
@@ -59,7 +59,7 @@ public class DepartmentRepository {
         Department department = entityManager.find(Department.class, id);
         if (department != null) {
             entityManager.remove(department);
-            System.out.println("🗑️ Département supprimé: " + id);
+            System.out.println("Département supprimé: " + id);
         }
     }
 
@@ -69,7 +69,7 @@ public class DepartmentRepository {
         query.setParameter("code", code);
         Long count = query.getSingleResult();
         boolean exists = count > 0;
-        System.out.println("🔍 Vérification existence code " + code + ": " + exists);
+        System.out.println("Vérification existence code " + code + ": " + exists);
         return exists;
     }
 

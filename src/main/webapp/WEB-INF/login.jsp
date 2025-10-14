@@ -200,7 +200,7 @@
         <form action="login" method="post">
             <div class="form-group">
                 <label for="email">Adresse e-mail</label>
-                <input type="email" id="email" name="email" class="form-control" placeholder="votre@email.com" required>
+                <input  type="email" id="email" name="email" class="form-control" placeholder="votre@email.com" required>
             </div>
 
             <div class="form-group">

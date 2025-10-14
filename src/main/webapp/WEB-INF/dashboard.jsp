@@ -800,6 +800,10 @@
                 <i class="fas fa-clock"></i>
                 <span>Disponibilités</span>
             </a>
+            <a href="${pageContext.request.contextPath}/admin/users" class="nav-item">
+                <i class="fas fa-users"></i>
+                <span>Users</span>
+            </a>
             <a href="departments" class="nav-item">
                 <i class="fas fa-hospital"></i>
                 <span>Départements</span>

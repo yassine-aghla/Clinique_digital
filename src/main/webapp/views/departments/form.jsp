@@ -512,7 +512,7 @@
                 <i class="fas fa-hospital"></i>
                 <span>Départements</span>
             </a>
-            <a href="" class="nav-item">
+            <a href="specialties" class="nav-item">
                 <i class="fas fa-stethoscope"></i>
                 <span>Spécialités</span>
             </a>
