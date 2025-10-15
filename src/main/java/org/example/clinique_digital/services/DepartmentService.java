@@ -11,6 +11,7 @@ import org.example.clinique_digital.repositories.DepartmentRepository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class DepartmentService {
 
@@ -61,15 +62,23 @@ public class DepartmentService {
     }
 
     public List<DepartmentDTO> getAllDepartments() {
-        System.out.println(" Récupération de tous les départements");
+        System.out.println("Récupération de tous les départements");
 
         EntityManager em = emf.createEntityManager();
 
         try {
             departmentRepository.entityManager = em;
             List<Department> departments = departmentRepository.findAll();
-            System.out.println(departments.size() + " départements trouvés");
-            return DepartmentMapper.toDTOList(departments);
+            List<DepartmentDTO> departmentDTOs = departments.stream().map(department -> {
+                DepartmentDTO dto = DepartmentMapper.toDTO(department);
+                int doctorsCount = countDoctorsByDepartment(em, department.getId());
+                dto.setDoctorsCount(doctorsCount);
+
+                return dto;
+            }).collect(Collectors.toList());
+
+            System.out.println(departmentDTOs.size() + " départements trouvés");
+            return departmentDTOs;
         } catch (Exception e) {
             System.err.println("Erreur récupération départements: " + e.getMessage());
             throw new RuntimeException("Erreur lors de la récupération des départements", e);
@@ -170,6 +179,18 @@ public class DepartmentService {
             return departmentRepository.findById(id).isPresent();
         } finally {
             em.close();
+        }
+    }
+    private int countDoctorsByDepartment(EntityManager em, Long departmentId) {
+        try {
+            String jpql = "SELECT COUNT(d) FROM Doctor d WHERE d.departement.id = :departmentId";
+            Long count = em.createQuery(jpql, Long.class)
+                    .setParameter("departmentId", departmentId)
+                    .getSingleResult();
+            return count.intValue();
+        } catch (Exception e) {
+            System.err.println("Erreur comptage médecins pour département " + departmentId + ": " + e.getMessage());
+            return 0;
         }
     }
 }

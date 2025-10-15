@@ -85,4 +85,13 @@ public class SpecialtyRepository {
         query.setParameter("departmentId", departmentId);
         return query.getResultList();
     }
+
+    public List<Object[]> findAllWithDoctorsCount() {
+        String jpql = "SELECT s, COUNT(d) " +
+                "FROM Specialty s " +
+                "LEFT JOIN Doctor d ON d.specialty_id = s " +
+                "GROUP BY s.id, s.code, s.name, s.description, s.department, s.createdAt, s.updatedAt";
+
+        return entityManager.createQuery(jpql, Object[].class).getResultList();
+    }
 }

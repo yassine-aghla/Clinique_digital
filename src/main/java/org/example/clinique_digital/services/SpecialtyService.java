@@ -13,6 +13,7 @@ import org.example.clinique_digital.repositories.SpecialtyRepository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class SpecialtyService {
 
@@ -87,8 +88,17 @@ public class SpecialtyService {
         try {
             specialtyRepository.entityManager = em;
             List<Specialty> specialties = specialtyRepository.findAll();
-            System.out.println("" + specialties.size() + " spécialités trouvées");
-            return SpecialtyMapper.toDTOList(specialties);
+            List<SpecialtyDTO> specialtyDTOs = specialties.stream().map(specialty -> {
+                SpecialtyDTO dto = SpecialtyMapper.toDTO(specialty);
+
+                int doctorsCount = countDoctorsBySpecialty(em, specialty.getId());
+                dto.setDoctorsCount(doctorsCount);
+
+                return dto;
+            }).collect(Collectors.toList());
+
+            System.out.println("" + specialtyDTOs.size() + " spécialités trouvées");
+            return specialtyDTOs;
         } catch (Exception e) {
             System.err.println("Erreur récupération spécialités: " + e.getMessage());
             throw new RuntimeException("Erreur lors de la récupération des spécialités", e);
@@ -210,6 +220,18 @@ public class SpecialtyService {
             return specialtyRepository.findById(id).isPresent();
         } finally {
             em.close();
+        }
+    }
+    private int countDoctorsBySpecialty(EntityManager em, Long specialtyId) {
+        try {
+            String jpql = "SELECT COUNT(d) FROM Doctor d WHERE d.specialite.id = :specialtyId";
+            Long count = em.createQuery(jpql, Long.class)
+                    .setParameter("specialtyId", specialtyId)
+                    .getSingleResult();
+            return count.intValue();
+        } catch (Exception e) {
+            System.err.println("Erreur comptage médecins pour spécialité " + specialtyId + ": " + e.getMessage());
+            return 0;
         }
     }
 }

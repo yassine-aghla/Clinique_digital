@@ -1,3 +1,4 @@
+<%@ page import="org.example.clinique_digital.entities.User" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="fr">
@@ -762,12 +763,13 @@
         </div>
     </div>
 
+    <% User user=(User) session.getAttribute("user");%>
     <div class="sidebar-user">
         <div class="user-card">
-            <div class="user-avatar-large">A</div>
+            <div class="user-avatar-large"><%=user.getNom().substring(0,1).toUpperCase()%></div>
             <div class="user-info-text">
-                <h4>Dr. Ahmed</h4>
-                <span class="role-badge role-admin">ADMIN</span>
+                <h4><%=user.getNom()%></h4>
+                <span class="role-badge role-admin"><%=user.getRole()%></span>
             </div>
         </div>
     </div>
@@ -788,7 +790,7 @@
                 <i class="fas fa-users"></i>
                 <span>Patients</span>
             </a>
-            <a href="" class="nav-item">
+            <a href="${pageContext.request.contextPath}/doctors" class="nav-item">
                 <i class="fas fa-user-md"></i>
                 <span>Docteurs</span>
             </a>
@@ -812,6 +814,7 @@
                 <i class="fas fa-stethoscope"></i>
                 <span>Spécialités</span>
             </a>
+
             <a href="" class="nav-item">
                 <i class="fas fa-file-medical"></i>
                 <span>Notes Médicales</span>

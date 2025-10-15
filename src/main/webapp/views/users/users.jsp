@@ -1,6 +1,8 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="java.util.List" %>
 <%@ page import="org.example.clinique_digital.dto.UserDTO" %>
+<%@ page import="org.example.clinique_digital.entities.User" %>
+<%@ page import="java.util.List" %>
 <%
     List<UserDTO> users = (List<UserDTO>) request.getAttribute("users");
     String successMessage = (String) session.getAttribute("successMessage");
@@ -869,12 +871,13 @@
         </div>
     </div>
 
+    <% User Cuser=(User) session.getAttribute("user");%>
     <div class="sidebar-user">
         <div class="user-card">
-            <div class="user-avatar-large">A</div>
+            <div class="user-avatar-large"><%=Cuser.getNom().substring(0,1).toUpperCase()%></div>
             <div class="user-info-text">
-                <h4>Administrateur</h4>
-                <span class="role-badge role-admin">ADMIN</span>
+                <h4><%=Cuser.getNom()%></h4>
+                <span class="role-badge role-admin"><%=Cuser.getRole()%></span>
             </div>
         </div>
     </div>

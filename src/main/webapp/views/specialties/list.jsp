@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="java.util.List" %>
 <%@ page import="org.example.clinique_digital.dto.SpecialtyDTO" %>
+<%@ page import="org.example.clinique_digital.entities.User" %>
 <%
     List<SpecialtyDTO> specialties = (List<SpecialtyDTO>) request.getAttribute("specialties");
     String successMessage = (String) session.getAttribute("successMessage");
@@ -744,12 +745,13 @@
         </div>
     </div>
 
+    <% User user=(User) session.getAttribute("user");%>
     <div class="sidebar-user">
         <div class="user-card">
-            <div class="user-avatar-large">A</div>
+            <div class="user-avatar-large"><%=user.getNom().substring(0,1).toUpperCase()%></div>
             <div class="user-info-text">
-                <h4>Dr. Ahmed</h4>
-                <span class="role-badge role-admin">ADMIN</span>
+                <h4><%=user.getNom()%></h4>
+                <span class="role-badge role-admin"><%=user.getRole()%></span>
             </div>
         </div>
     </div>
@@ -789,6 +791,10 @@
             <a href="specialties" class="nav-item active">
                 <i class="fas fa-stethoscope"></i>
                 <span>Spécialités</span>
+            </a>
+            <a href="${pageContext.request.contextPath}/admin/users" class="nav-item ">
+                <i class="fas fa-users-cog"></i>
+                <span>Utilisateurs</span>
             </a>
             <a href="medical-notes" class="nav-item">
                 <i class="fas fa-file-medical"></i>

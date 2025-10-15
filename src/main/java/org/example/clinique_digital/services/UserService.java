@@ -57,19 +57,20 @@ public class UserService {
         }
     }
 
-    public boolean toggleUserStatus(Long userId) {
+    public boolean toggleUserStatus(Long userId,Role CurrentRoleUser) {
         EntityManager em = emf.createEntityManager();
         try {
             em.getTransaction().begin();
 
             User user = em.find(User.class, userId);
             if (user != null) {
-                user.setStatus(!user.isStatus());
-                em.merge(user);
-                em.getTransaction().commit();
-                return true;
+                if (CurrentRoleUser == Role.ADMIN) {
+                    user.setStatus(!user.isStatus());
+                    em.merge(user);
+                    em.getTransaction().commit();
+                    return true;
+                }
             }
-
             em.getTransaction().rollback();
             return false;
 
@@ -83,13 +84,17 @@ public class UserService {
         }
     }
 
-    public boolean deleteUser(Long userId) {
+    public boolean deleteUser(Long userId ,Role currentUserRole) {
         EntityManager em = emf.createEntityManager();
         try {
             em.getTransaction().begin();
 
             User user = em.find(User.class, userId);
             if (user != null) {
+                if (currentUserRole == Role.STAFF && user.getRole() != Role.PATIENT) {
+                    em.getTransaction().rollback();
+                    return false;
+                }
                 em.remove(user);
                 em.getTransaction().commit();
                 return true;

@@ -85,12 +85,14 @@ public class UserManagementServlet extends HttpServlet {
 
         try {
             Long userId = Long.parseLong(request.getParameter("id"));
-            boolean success = userService.toggleUserStatus(userId);
+            User currentUser=(User)request.getSession().getAttribute("user");
+            Role currentRoleUser=currentUser.getRole();
+            boolean success = userService.toggleUserStatus(userId,currentRoleUser);
 
             if (success) {
                 request.getSession().setAttribute("successMessage", "Statut utilisateur modifié avec succès");
             } else {
-                request.getSession().setAttribute("errorMessage", "Erreur lors de la modification du statut");
+                request.getSession().setAttribute("errorMessage", "Erreur lors de la modification du statut vous n'avez pas la permission");
             }
 
         } catch (Exception e) {
@@ -105,12 +107,14 @@ public class UserManagementServlet extends HttpServlet {
 
         try {
             Long userId = Long.parseLong(request.getParameter("id"));
-            boolean success = userService.deleteUser(userId);
+            User currentUser=(User)request.getSession().getAttribute("user");
+            Role CurrentUserRole=currentUser!=null ? currentUser.getRole() : null;
+            boolean success = userService.deleteUser(userId,CurrentUserRole);
 
             if (success) {
                 request.getSession().setAttribute("successMessage", "Utilisateur supprimé avec succès");
             } else {
-                request.getSession().setAttribute("errorMessage", "Erreur lors de la suppression");
+                request.getSession().setAttribute("errorMessage", "Erreur lors de la suppression vous n'avez pas la permission nessecaire");
             }
 
         } catch (Exception e) {
