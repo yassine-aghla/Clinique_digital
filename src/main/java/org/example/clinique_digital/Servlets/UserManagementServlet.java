@@ -24,6 +24,7 @@ public class UserManagementServlet extends HttpServlet {
 
     }
 
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -40,6 +41,9 @@ public class UserManagementServlet extends HttpServlet {
                 case "delete":
                     deleteUser(request, response);
                     break;
+                case "edit":
+                    showEditForm(request, response);
+                    break;
                 default:
                     listUsers(request, response);
             }
@@ -54,6 +58,8 @@ public class UserManagementServlet extends HttpServlet {
 
         if ("create".equals(action)) {
             createUser(request, response);
+        } else if ("update".equals(action)) {
+            updateUser(request, response);
         } else {
             response.sendRedirect(request.getContextPath() + "/admin/users");
         }
@@ -222,4 +228,83 @@ public class UserManagementServlet extends HttpServlet {
 
         response.sendRedirect(request.getContextPath() + "/admin/users");
     }
+
+    private void showEditForm(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        try {
+            Long userId = Long.parseLong(request.getParameter("id"));
+            UserDTO user = userService.getUserDetailsById(userId);
+
+            if (user != null) {
+                request.setAttribute("userToEdit", user);
+                request.getRequestDispatcher("/views/users/edit-user.jsp").forward(request, response);
+            } else {
+                request.getSession().setAttribute("errorMessage", "Utilisateur non trouvé");
+                response.sendRedirect(request.getContextPath() + "/admin/users");
+            }
+
+        } catch (Exception e) {
+            request.getSession().setAttribute("errorMessage", "Erreur: " + e.getMessage());
+            response.sendRedirect(request.getContextPath() + "/admin/users");
+        }
+    }
+
+    private void updateUser(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        try {
+            Long userId = Long.parseLong(request.getParameter("id"));
+            String nom = request.getParameter("nom");
+            String email = request.getParameter("email");
+            String role = request.getParameter("role");
+
+            User currentUser = (User) request.getSession().getAttribute("user");
+            Role currentUserRole = currentUser != null ? currentUser.getRole() : null;
+
+            boolean success = false;
+
+            if ("PATIENT".equals(role)) {
+                success = userService.updatePatient(
+                        userId, nom, email,
+                        request.getParameter("cin"),
+                        request.getParameter("adresse"),
+                        request.getParameter("dateNaissance"),
+                        request.getParameter("sexe"),
+                        request.getParameter("telephone"),
+                        request.getParameter("groupeSanguin"),
+                        currentUserRole,
+                        currentUser
+                );
+            } else if ("DOCTOR".equals(role)) {
+                success = userService.updateDoctor(
+                        userId, nom, email,
+                        request.getParameter("matricule"),
+                        request.getParameter("titre"),
+                        currentUserRole,
+                        currentUser
+                );
+            } else {
+                success = userService.updateUser(
+                        userId, nom, email,
+                        currentUserRole,
+                        currentUser
+                );
+            }
+
+            if (success) {
+                request.getSession().setAttribute("successMessage", "Utilisateur modifié avec succès");
+            } else {
+                request.getSession().setAttribute("errorMessage",
+                        "Erreur lors de la modification. Vérifiez vos permissions ou si les données sont déjà utilisées.");
+            }
+
+        } catch (Exception e) {
+            request.getSession().setAttribute("errorMessage", "Erreur: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        response.sendRedirect(request.getContextPath() + "/admin/users");
+    }
+
 }

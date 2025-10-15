@@ -1065,8 +1065,16 @@
                                         <%= user.isStatus() ? "ACTIF" : "INACTIF" %>
                                     </span>
                     </td>
+
                     <td>
                         <div class="actions-cell">
+                            <!-- Bouton Édition -->
+                            <a href="users?action=edit&id=<%= user.getId() %>"
+                               class="btn-toggle"
+                               style="background: var(--info); color: white;">
+                                <i class="fas fa-edit"></i>
+                            </a>
+
                             <a href="users?action=toggleStatus&id=<%= user.getId() %>"
                                class="btn-toggle"
                                onclick="return confirm('Êtes-vous sûr de vouloir <%= user.isStatus() ? "désactiver" : "activer" %> cet utilisateur ?')">

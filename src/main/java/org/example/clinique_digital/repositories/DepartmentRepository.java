@@ -12,16 +12,16 @@ public class DepartmentRepository {
     public EntityManager entityManager;
 
     public Department save(Department department) {
-        System.out.println("💾 Sauvegarde du département: " + department.getName());
+        System.out.println("Sauvegarde du département: " + department.getName());
 
         if (department.getId() == null) {
             entityManager.persist(department);
             entityManager.flush();
-            System.out.println("➡️ Département persisté avec ID: " + department.getId());
+            System.out.println("Département persisté avec ID: " + department.getId());
             return department;
         } else {
             Department merged = entityManager.merge(department);
-            System.out.println("🔄 Département mergé: " + merged.getId());
+            System.out.println("Département mergé: " + merged.getId());
             return merged;
         }
     }
