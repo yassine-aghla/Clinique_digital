@@ -35,6 +35,10 @@ public class DoctorAssignmentServlet extends HttpServlet {
         String action = request.getParameter("action");
 
         if ("showForm".equals(action)) {
+            if(!isAdmin(request)){
+                response.sendError(HttpServletResponse.SC_FORBIDDEN,"Acces interdit");
+                return;
+            }
             showAssignmentForm(request, response);
         } else if ("getSpecialties".equals(action)) {
             getSpecialtiesByDepartment(request, response);
@@ -43,6 +47,16 @@ public class DoctorAssignmentServlet extends HttpServlet {
         }
     }
 
+    private boolean isAdmin(HttpServletRequest request){
+        User CurrentUser=(User) request.getSession().getAttribute("user");
+        Role role=CurrentUser.getRole();
+        if(CurrentUser.getRole().equals(role.ADMIN)){
+            return true;
+        }
+
+        return false;
+
+    }
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -50,6 +64,10 @@ public class DoctorAssignmentServlet extends HttpServlet {
         String action = request.getParameter("action");
 
         if ("assign".equals(action)) {
+            if(!isAdmin(request)){
+                response.sendError(HttpServletResponse.SC_FORBIDDEN,"Acces interdit");
+                return;
+            }
             assignDoctor(request, response);
         }
     }

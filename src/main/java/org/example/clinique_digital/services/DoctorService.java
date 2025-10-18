@@ -1,10 +1,8 @@
 package org.example.clinique_digital.services;
 
+import jakarta.persistence.*;
 import org.example.clinique_digital.entities.*;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.Persistence;
-import jakarta.persistence.TypedQuery;
+
 import java.util.List;
 
 public class DoctorService {
@@ -79,4 +77,48 @@ public class DoctorService {
             em.close();
         }
     }
+
+    public Doctor createDoctorWithDefaultAvailability(String nom, String email, String password,
+                                                      String matricule, String titre,
+                                                      Specialty specialite, Department departement) {
+        EntityManager em = emf.createEntityManager();
+        try {
+            em.getTransaction().begin();
+
+            Doctor doctor = new Doctor(nom, email, password, matricule, titre, specialite, departement);
+            em.persist(doctor);
+
+            // Créer les disponibilités par défaut
+            AvailabilityService availabilityService = new AvailabilityService();
+            availabilityService.setDefaultAvailability(doctor);
+
+            em.getTransaction().commit();
+            return doctor;
+
+        } catch (Exception e) {
+            if (em.getTransaction().isActive()) {
+                em.getTransaction().rollback();
+            }
+            throw e;
+        } finally {
+            em.close();
+        }
+    }
+    public List<Doctor> getAllDoctorsWithAvailabilities() {
+        EntityManager em = emf.createEntityManager();
+        try {
+            TypedQuery<Doctor> query = em.createQuery(
+                    "SELECT DISTINCT d FROM Doctor d " +
+                            "LEFT JOIN FETCH d.departement " +
+                            "LEFT JOIN FETCH d.specialite " +
+                            "LEFT JOIN FETCH d.availabilities a " +
+                            "ORDER BY d.nom, a.dayOfWeek",
+                    Doctor.class
+            );
+            return query.getResultList();
+        } finally {
+            em.close();
+        }
+    }
+
 }

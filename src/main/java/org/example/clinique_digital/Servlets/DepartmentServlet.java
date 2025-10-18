@@ -1,14 +1,14 @@
 package org.example.clinique_digital.Servlets;
 
-
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.example.clinique_digital.entities.Role;
+import org.example.clinique_digital.entities.User;
 import org.example.clinique_digital.services.DepartmentService;
 import org.example.clinique_digital.dto.DepartmentDTO;
-
 
 import java.io.IOException;
 import java.util.List;
@@ -16,12 +16,13 @@ import java.util.List;
 @WebServlet("/departments")
 public class DepartmentServlet extends HttpServlet {
 
-
     private DepartmentService departmentService;
+
     @Override
     public void init() throws ServletException {
         this.departmentService = new DepartmentService();
     }
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -34,12 +35,24 @@ public class DepartmentServlet extends HttpServlet {
 
         switch (action) {
             case "new":
+                if (!isAdmin(request)) {
+                    response.sendError(HttpServletResponse.SC_FORBIDDEN, "Accès refusé");
+                    return;
+                }
                 showNewForm(request, response);
                 break;
             case "edit":
+                if (!isAdmin(request)) {
+                    response.sendError(HttpServletResponse.SC_FORBIDDEN, "Accès refusé");
+                    return;
+                }
                 showEditForm(request, response);
                 break;
             case "delete":
+                if (!isAdmin(request)) {
+                    response.sendError(HttpServletResponse.SC_FORBIDDEN, "Accès refusé");
+                    return;
+                }
                 deleteDepartment(request, response);
                 break;
             case "search":
@@ -57,10 +70,27 @@ public class DepartmentServlet extends HttpServlet {
         String action = request.getParameter("action");
 
         if ("create".equals(action)) {
+            if (!isAdmin(request)) {
+                response.sendError(HttpServletResponse.SC_FORBIDDEN, "Accès refusé");
+                return;
+            }
             createDepartment(request, response);
         } else if ("update".equals(action)) {
+            if (!isAdmin(request)) {
+                response.sendError(HttpServletResponse.SC_FORBIDDEN, "Accès refusé");
+                return;
+            }
             updateDepartment(request, response);
         }
+    }
+
+    private boolean isAdmin(HttpServletRequest request) {
+        User Currentuser=(User)request.getSession().getAttribute("user");
+        Role role= Currentuser.getRole();
+       if(role.equals(Role.ADMIN)) {
+           return true;
+       }
+       return false;
     }
 
     private void listDepartments(HttpServletRequest request, HttpServletResponse response)

@@ -1,13 +1,14 @@
-<%@ page import="org.example.clinique_digital.entities.User" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ page import="org.example.clinique_digital.entities.User" %>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>${empty department ? 'Nouveau' : 'Modifier'} Département - MediPlan</title>
+    <title>Gestion des Disponibilités - MediPlan</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -40,7 +41,7 @@
             line-height: 1.6;
         }
 
-        /* Sidebar - Identique au Dashboard */
+        /* Sidebar */
         .sidebar {
             position: fixed;
             left: 0;
@@ -90,6 +91,7 @@
             font-size: 12px;
         }
 
+        /* User Profile in Sidebar */
         .sidebar-user {
             padding: 0 24px 24px;
             margin-bottom: 24px;
@@ -136,7 +138,11 @@
         }
 
         .role-admin { background: rgba(255, 255, 255, 0.3); color: white; }
+        .role-doctor { background: rgba(124, 205, 187, 0.3); color: white; }
+        .role-patient { background: rgba(237, 248, 177, 0.3); color: var(--dark); }
+        .role-staff { background: rgba(254, 196, 79, 0.3); color: var(--dark); }
 
+        /* Navigation Menu */
         .nav-menu {
             padding: 0 16px;
         }
@@ -235,23 +241,6 @@
             gap: 16px;
         }
 
-        .menu-toggle {
-            display: none;
-            width: 44px;
-            height: 44px;
-            background: var(--light);
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .menu-toggle i {
-            color: var(--dark);
-            font-size: 20px;
-        }
-
         .topbar-btn {
             width: 44px;
             height: 44px;
@@ -286,131 +275,192 @@
             border: 2px solid white;
         }
 
-        /* Content */
+        /* Content Area */
         .content {
             padding: 32px;
         }
 
-        .form-container {
-            background: white;
-            border-radius: 16px;
-            padding: 32px;
+        /* Cards for doctors */
+        .availability-card {
+            transition: transform 0.2s;
+            border-left: 4px solid var(--primary);
+            border-radius: 12px;
+            overflow: hidden;
             box-shadow: var(--shadow);
-            border: 1px solid #e2e8f0;
-            max-width: 600px;
-            margin: 0 auto;
         }
 
-        .form-header {
-            margin-bottom: 32px;
-            text-align: center;
+        .availability-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
         }
 
-        .form-header h1 {
-            color: var(--dark);
-            font-size: 28px;
-            font-weight: 700;
-            margin-bottom: 8px;
+        .day-badge {
+            font-size: 0.8em;
+            border-radius: 6px;
+            padding: 4px 8px;
         }
 
-        .form-header p {
-            color: var(--gray);
-            font-size: 16px;
-        }
-
-        .form-group {
-            margin-bottom: 24px;
-        }
-
-        .form-label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: var(--dark);
-            font-size: 14px;
-        }
-
-        .form-control {
-            width: 100%;
-            padding: 12px 16px;
-            border: 2px solid #e2e8f0;
-            border-radius: 10px;
-            font-size: 14px;
-            transition: var(--transition);
-            background: #f8fafc;
-        }
-
-        .form-control:focus {
-            outline: none;
-            border-color: var(--primary);
+        .doctor-card {
             background: white;
-            box-shadow: 0 0 0 3px rgba(44, 127, 184, 0.1);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            border: 1px solid #e2e8f0;
+            height: 100%;
+            display: grid;
+            grid-template-columns: 1fr,
         }
 
-        .form-actions {
+        .doctor-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+            border-color: var(--primary);
+        }
+
+        .doctor-header {
             display: flex;
-            gap: 16px;
-            justify-content: flex-end;
-            margin-top: 32px;
-            padding-top: 24px;
-            border-top: 2px solid #f1f5f9;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #e2e8f0;
         }
 
-        .btn-primary {
-            padding: 12px 24px;
+        .doctor-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 18px;
+        }
+
+        .doctor-info h4 {
+            color: var(--dark);
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .doctor-info p {
+            color: var(--gray);
+            font-size: 13px;
+            margin: 0;
+        }
+
+        .doctor-details {
+            margin-bottom: 20px;
+        }
+
+        .detail-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .detail-item i {
+            color: var(--primary);
+            width: 16px;
+        }
+
+        .availability-section {
+            margin-bottom: 20px;
+        }
+
+        .availability-section h6 {
+            color: var(--gray);
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .availability-section h6 i {
+            color: var(--primary);
+        }
+
+        .availability-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .availability-badge {
+            background: linear-gradient(135deg, #e0f2fe, #bae6fd);
+            color: var(--primary);
+            padding: 6px 10px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .no-availability {
+            background: linear-gradient(135deg, #fed7aa, #fde68a);
+            color: var(--warning);
+            padding: 6px 10px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .btn-manage {
+            width: 100%;
+            padding: 10px 16px;
             background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             color: white;
             border: none;
-            border-radius: 10px;
+            border-radius: 8px;
             font-size: 14px;
             font-weight: 600;
             cursor: pointer;
             transition: var(--transition);
-            display: inline-flex;
+            display: flex;
             align-items: center;
+            justify-content: center;
             gap: 8px;
             text-decoration: none;
         }
 
-        .btn-primary:hover {
+        .btn-manage:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 16px rgba(44, 127, 184, 0.3);
+            color: white;
         }
 
-        .btn-secondary {
-            padding: 12px 24px;
-            background: #64748b;
-            color: white;
+        /* Mobile Menu Toggle */
+        .menu-toggle {
+            display: none;
+            width: 44px;
+            height: 44px;
+            background: var(--light);
             border: none;
             border-radius: 10px;
-            font-size: 14px;
-            font-weight: 600;
             cursor: pointer;
-            transition: var(--transition);
-            text-decoration: none;
-            display: inline-flex;
             align-items: center;
-            gap: 8px;
+            justify-content: center;
         }
 
-        .btn-secondary:hover {
-            background: #475569;
-            transform: translateY(-1px);
-        }
-
-        .form-help {
-            color: var(--gray);
-            font-size: 12px;
-            margin-top: 4px;
-            font-style: italic;
-        }
-
-        .required::after {
-            content: " *";
-            color: var(--danger);
+        .menu-toggle i {
+            color: var(--dark);
+            font-size: 20px;
         }
 
         /* Responsive */
+        @media (max-width: 1200px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
         @media (max-width: 768px) {
             .sidebar {
                 transform: translateX(-100%);
@@ -436,8 +486,12 @@
                 padding: 20px;
             }
 
-            .form-container {
-                padding: 24px;
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .topbar-left h1 {
+                font-size: 20px;
             }
         }
 
@@ -485,7 +539,7 @@
     <nav class="nav-menu">
         <div class="nav-section">
             <div class="nav-section-title">Principal</div>
-            <a href="" class="nav-item">
+            <a href="${pageContext.request.contextPath}/dashboard" class="nav-item">
                 <i class="fas fa-home"></i>
                 <span>Tableau de Bord</span>
             </a>
@@ -498,7 +552,7 @@
                 <i class="fas fa-users"></i>
                 <span>Patients</span>
             </a>
-            <a href="" class="nav-item">
+            <a href="${pageContext.request.contextPath}/doctors" class="nav-item">
                 <i class="fas fa-user-md"></i>
                 <span>Docteurs</span>
             </a>
@@ -506,18 +560,23 @@
 
         <div class="nav-section">
             <div class="nav-section-title">Gestion</div>
-            <a href="${pageContext.request.contextPath}/admin/availabilities" class="nav-item">
+            <a href="${pageContext.request.contextPath}/admin/availabilities" class="nav-item active">
                 <i class="fas fa-clock"></i>
                 <span>Disponibilités</span>
             </a>
-            <a href="departments" class="nav-item active">
+            <a href="${pageContext.request.contextPath}/admin/users" class="nav-item">
+                <i class="fas fa-users"></i>
+                <span>Users</span>
+            </a>
+            <a href="${pageContext.request.contextPath}/departments" class="nav-item">
                 <i class="fas fa-hospital"></i>
                 <span>Départements</span>
             </a>
-            <a href="specialties" class="nav-item">
+            <a href="${pageContext.request.contextPath}/specialties" class="nav-item">
                 <i class="fas fa-stethoscope"></i>
                 <span>Spécialités</span>
             </a>
+
             <a href="" class="nav-item">
                 <i class="fas fa-file-medical"></i>
                 <span>Notes Médicales</span>
@@ -547,8 +606,8 @@
     <!-- Top Bar -->
     <div class="topbar">
         <div class="topbar-left">
-            <h1>${empty department ? 'Nouveau Département' : 'Modifier Département'}</h1>
-            <p>Gestion des départements médicaux</p>
+            <h1>Gestion des Disponibilités</h1>
+            <p>Gérez les disponibilités des médecins</p>
         </div>
         <div class="topbar-right">
             <button class="menu-toggle" onclick="toggleSidebar()">
@@ -569,94 +628,128 @@
 
     <!-- Content -->
     <div class="content">
-        <div class="form-container">
-            <div class="form-header">
-                <h1>
-                    <i class="fas fa-hospital" style="color: var(--primary); margin-right: 12px;"></i>
-                    ${empty department ? 'Créer un Nouveau Département' : 'Modifier le Département'}
-                </h1>
-                <p>${empty department ? 'Ajoutez un nouveau département médical à votre clinique' : 'Modifiez les informations du département existant'}</p>
+        <!-- Messages d'alerte -->
+        <c:if test="${not empty successMessage}">
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="fas fa-check-circle me-2"></i>${successMessage}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>
+            <c:remove var="successMessage" scope="session"/>
+        </c:if>
 
-            <form action="departments" method="post">
-                <input type="hidden" name="action" value="${empty department ? 'create' : 'update'}">
-                <c:if test="${not empty department}">
-                    <input type="hidden" name="id" value="${department.id}">
+        <div class="row">
+            <c:forEach var="doctor" items="${doctors}" varStatus="loop">
+                <%-- Filtrage : Admin voit tout, Docteur ne voit que lui-même --%>
+                <c:if test="${user.role == 'ADMIN' or (user.role == 'DOCTOR' and user.id == doctor.id)}">
+                    <div class="col-md-6 col-lg-4 mb-4">
+                        <div class="doctor-card">
+                            <div class="doctor-header">
+                                <div class="doctor-avatar">${doctor.nom.substring(0,1).toUpperCase()}</div>
+                                <div class="doctor-info">
+                                    <h4>Dr. ${doctor.nom}</h4>
+                                    <p>${doctor.matricule}</p>
+                                        <%-- Badge pour indiquer "vous" --%>
+                                    <c:if test="${user.role == 'DOCTOR' and user.id == doctor.id}">
+                                        <small class="text-success"><i class="fas fa-user me-1"></i>Vous</small>
+                                    </c:if>
+                                </div>
+                            </div>
+
+                            <div class="doctor-details">
+                                <div class="detail-item">
+                                    <i class="fas fa-stethoscope"></i>
+                                    <span>
+                                <c:choose>
+                                    <c:when test="${not empty doctor.specialite}">
+                                        ${doctor.specialite.name}
+                                    </c:when>
+                                    <c:otherwise>
+                                        <span class="text-warning">Non assigné</span>
+                                    </c:otherwise>
+                                </c:choose>
+                            </span>
+                                </div>
+                                <div class="detail-item">
+                                    <i class="fas fa-hospital"></i>
+                                    <span>
+                                <c:choose>
+                                    <c:when test="${not empty doctor.departement}">
+                                        ${doctor.departement.name}
+                                    </c:when>
+                                    <c:otherwise>
+                                        <span class="text-warning">Non assigné</span>
+                                    </c:otherwise>
+                                </c:choose>
+                            </span>
+                                </div>
+                            </div>
+
+                            <!-- Disponibilités résumées -->
+                            <div class="availability-section">
+                                <h6><i class="fas fa-calendar-check"></i> Disponibilités</h6>
+                                <div class="availability-badges">
+                                    <c:choose>
+                                        <c:when test="${not empty doctor.availabilities and doctor.availabilities.size() > 0}">
+                                            <c:forEach var="avail" items="${doctor.availabilities}">
+                                                <c:if test="${avail.available}">
+                                            <span class="availability-badge">
+                                                ${avail.dayOfWeek.frenchName}: ${avail.startTime} - ${avail.endTime}
+                                            </span>
+                                                </c:if>
+                                            </c:forEach>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <span class="no-availability">Aucune disponibilité définie</span>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </div>
+                            </div>
+
+                            <!-- Bouton Gérer les disponibilités avec contrôle d'accès -->
+                            <c:choose>
+                                <%-- Admin peut tout gérer --%>
+                                <c:when test="${user.role == 'ADMIN'}">
+                                    <a href="${pageContext.request.contextPath}/admin/availabilities/doctor/${doctor.id}" class="btn-manage">
+                                        <i class="fas fa-edit me-1"></i>Gérer les disponibilités
+                                    </a>
+                                </c:when>
+
+                                <%-- Docteur peut gérer ses propres disponibilités --%>
+                                <c:when test="${user.role == 'DOCTOR' and user.id == doctor.id}">
+                                    <a href="${pageContext.request.contextPath}/admin/availabilities/doctor/${doctor.id}" class="btn-manage"
+                                       style="background: linear-gradient(135deg, var(--success), #059669);">
+                                        <i class="fas fa-user-edit me-1"></i>Gérer mes disponibilités
+                                    </a>
+                                </c:when>
+
+                                <%-- Autres cas ne devraient pas arriver grâce au filtrage --%>
+                                <c:otherwise>
+                                    <button class="btn-manage" disabled
+                                            style="background: linear-gradient(135deg, var(--gray), #94a3b8); cursor: not-allowed; opacity: 0.6;">
+                                        <i class="fas fa-eye me-1"></i>Consultation
+                                    </button>
+                                </c:otherwise>
+                            </c:choose>
+                        </div>
+                    </div>
                 </c:if>
-
-                <div class="form-group">
-                    <label for="code" class="form-label required">Code du Département</label>
-                    <input type="text" id="code" name="code"
-                           value="${department.code}"
-                           class="form-control"
-                           placeholder="Ex: CARDIO, DERMA, PEDIA"
-                           pattern="[A-Z0-9]{2,10}"
-                           title="2-10 caractères majuscules ou chiffres"
-                           required>
-                    <div class="form-help">Code unique en majuscules (2-10 caractères)</div>
-                </div>
-
-                <div class="form-group">
-                    <label for="name" class="form-label required">Nom du Département</label>
-                    <input type="text" id="name" name="name"
-                           value="${department.name}"
-                           class="form-control"
-                           placeholder="Ex: Cardiologie, Dermatologie, Pédiatrie"
-                           required>
-                    <div class="form-help">Nom complet du département médical</div>
-                </div>
-
-                <div class="form-group">
-                    <label for="description" class="form-label">Description</label>
-                    <textarea id="description" name="description"
-                              class="form-control"
-                              rows="5"
-                              placeholder="Décrivez les spécialités et services offerts par ce département...">${department.description}</textarea>
-                    <div class="form-help">Description détaillée des activités du département</div>
-                </div>
-
-                <div class="form-actions">
-                    <a href="departments" class="btn-secondary">
-                        <i class="fas fa-arrow-left"></i> Retour
-                    </a>
-                    <button type="submit" class="btn-primary">
-                        <c:choose>
-                            <c:when test="${empty department}">
-                                <i class="fas fa-plus"></i> Créer le Département
-                            </c:when>
-                            <c:otherwise>
-                                <i class="fas fa-save"></i> Modifier le Département
-                            </c:otherwise>
-                        </c:choose>
-                    </button>
-                </div>
-            </form>
+            </c:forEach>
         </div>
+
+        <c:if test="${empty doctors}">
+            <div class="alert alert-info text-center">
+                <i class="fas fa-info-circle me-2"></i>
+                Aucun docteur trouvé.
+            </div>
+        </c:if>
     </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     function toggleSidebar() {
         document.querySelector('.sidebar').classList.toggle('active');
     }
-
-    // Validation côté client
-    document.addEventListener('DOMContentLoaded', function() {
-        const form = document.querySelector('form');
-        const codeInput = document.getElementById('code');
-
-        // Convertir le code en majuscules automatiquement
-        codeInput.addEventListener('input', function() {
-            this.value = this.value.toUpperCase();
-        });
-
-        // Empêcher les espaces dans le code
-        codeInput.addEventListener('keypress', function(e) {
-            if (e.key === ' ') {
-                e.preventDefault();
-            }
-        });
-    });
 </script>
 </body>
 </html>

@@ -2,6 +2,9 @@ package org.example.clinique_digital.entities;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "doctors")
 @PrimaryKeyJoinColumn(name = "user_id")
@@ -15,7 +18,8 @@ public class Doctor extends User {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "specialty_id")
     private Specialty specialite;
-
+    @OneToMany(mappedBy = "doctor", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Availability> availabilities = new ArrayList<>();
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "department_id")
     private Department departement;
@@ -45,4 +49,11 @@ public class Doctor extends User {
 
     public Department getDepartement() { return departement; }
     public void setDepartement(Department departement) { this.departement = departement; }
+    public List<Availability> getAvailabilities() { return availabilities; }
+    public void setAvailabilities(List<Availability> availabilities) { this.availabilities = availabilities; }
+
+    public void addAvailability(Availability availability) {
+        availability.setDoctor(this);
+        this.availabilities.add(availability);
+    }
 }

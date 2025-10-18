@@ -833,7 +833,7 @@
                 <i class="fas fa-cog"></i>
                 <span>Paramètres</span>
             </a>
-            <a href="" class="nav-item">
+            <a href="${pageContext.request.contextPath}/logout" class="nav-item">
                 <i class="fas fa-sign-out-alt"></i>
                 <span>Déconnexion</span>
             </a>

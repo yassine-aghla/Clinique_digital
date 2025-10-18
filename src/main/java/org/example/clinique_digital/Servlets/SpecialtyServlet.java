@@ -6,6 +6,8 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.example.clinique_digital.dto.SpecialtyDTO;
+import org.example.clinique_digital.entities.Role;
+import org.example.clinique_digital.entities.User;
 import org.example.clinique_digital.services.DepartmentService;
 import org.example.clinique_digital.services.SpecialtyService;
 
@@ -44,12 +46,24 @@ public class SpecialtyServlet extends HttpServlet {
 
         switch (action) {
             case "new":
+                if(!isAdmin(request)){
+                    response.sendError(HttpServletResponse.SC_FORBIDDEN,"acces refuse");
+                    return;
+                }
                 showNewForm(request, response);
                 break;
             case "edit":
+                if(!isAdmin(request)){
+                    response.sendError(HttpServletResponse.SC_FORBIDDEN,"Acces refuse");
+                    return;
+                }
                 showEditForm(request, response);
                 break;
             case "delete":
+                if(!isAdmin(request)){
+                    response.sendError(HttpServletResponse.SC_FORBIDDEN,"acces refuse");
+                    return;
+                }
                 deleteSpecialty(request, response);
                 break;
             case "search":
@@ -67,10 +81,27 @@ public class SpecialtyServlet extends HttpServlet {
         String action = request.getParameter("action");
 
         if ("create".equals(action)) {
+            if(!isAdmin(request)){
+                response.sendError(HttpServletResponse.SC_FORBIDDEN,"Acces refuse");
+                return;
+            }
             createSpecialty(request, response);
         } else if ("update".equals(action)) {
+            if(!isAdmin(request)){
+                response.sendError(HttpServletResponse.SC_FORBIDDEN,"acces refuse");
+                return;
+            }
             updateSpecialty(request, response);
         }
+    }
+
+    private boolean isAdmin(HttpServletRequest request) {
+        User Currentuser=(User)request.getSession().getAttribute("user");
+        Role role= Currentuser.getRole();
+        if(role.equals(Role.ADMIN)) {
+            return true;
+        }
+        return false;
     }
 
     private void listSpecialties(HttpServletRequest request, HttpServletResponse response)

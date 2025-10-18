@@ -1,3 +1,4 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="org.example.clinique_digital.entities.*" %>
 <%@ page import="java.util.List" %>
@@ -5,7 +6,7 @@
     List<Doctor> doctors = (List<Doctor>) request.getAttribute("doctors");
     String successMessage = (String) session.getAttribute("successMessage");
     String errorMessage = (String) session.getAttribute("errorMessage");
-
+   User Currentuser =(User)request.getSession().getAttribute("user");
     if (successMessage != null) session.removeAttribute("successMessage");
     if (errorMessage != null) session.removeAttribute("errorMessage");
 %>
@@ -567,51 +568,60 @@
 
         .actions-cell {
             display: flex;
-            gap: 8px;
+            gap: 10px;
+            align-items: center;
         }
 
-        .btn-assign {
-            padding: 10px 18px;
-            background: linear-gradient(135deg, var(--info), #2563eb);
-            color: white;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            text-decoration: none;
-            font-size: 12px;
-            font-weight: 700;
-            transition: var(--transition);
+        /* Style général des boutons */
+        .btn-action {
             display: inline-flex;
             align-items: center;
-            gap: 8px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .btn-assign:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 16px rgba(59, 130, 246, 0.3);
-        }
-
-        .btn-view {
-            padding: 10px 18px;
-            background: linear-gradient(135deg, var(--gray), #475569);
-            color: white;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
+            gap: 6px;
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 500;
             text-decoration: none;
-            font-size: 12px;
-            font-weight: 700;
-            transition: var(--transition);
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
+            transition: all 0.25s ease;
+            border: none;
         }
 
-        .btn-view:hover {
+        /* Bouton "Assigner" */
+        .assign-btn {
+            background-color: #6c63ff; /* violet élégant */
+            color: white;
+        }
+        .assign-btn:hover {
+            background-color: #5848e0;
             transform: translateY(-2px);
-            box-shadow: 0 8px 16px rgba(100, 116, 139, 0.3);
+            box-shadow: 0 4px 8px rgba(108, 99, 255, 0.3);
+        }
+
+        /* Bouton "Disponibilités" pour admin */
+        .admin-btn {
+            background-color: #0052cc; /* bleu pro */
+            color: white;
+        }
+        .admin-btn:hover {
+            background-color: #003d99;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 82, 204, 0.3);
+        }
+
+        /* Bouton "Mes disponibilités" pour docteur */
+        .doctor-btn {
+            background-color: #198754; /* vert bootstrap-like */
+            color: white;
+        }
+        .doctor-btn:hover {
+            background-color: #146c43;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(25, 135, 84, 0.3);
+        }
+
+        /* Icônes */
+        .btn-action i {
+            font-size: 1rem;
         }
 
         /* Empty State */
@@ -755,7 +765,7 @@
 
         <div class="nav-section">
             <div class="nav-section-title">Gestion</div>
-            <a href="" class="nav-item">
+            <a href="${pageContext.request.contextPath}/admin/availabilities" class="nav-item">
                 <i class="fas fa-clock"></i>
                 <span>Disponibilités</span>
             </a>
@@ -791,7 +801,7 @@
                 <i class="fas fa-cog"></i>
                 <span>Paramètres</span>
             </a>
-            <a href="" class="nav-item">
+            <a href="${pageContext.request.contextPath}/logout" class="nav-item">
                 <i class="fas fa-sign-out-alt"></i>
                 <span>Déconnexion</span>
             </a>
@@ -898,6 +908,7 @@
                         <th>Titre</th>
                         <th>Département</th>
                         <th>Spécialité</th>
+                        <th>Disponibilités</th>
                         <th>Actions</th>
                     </tr>
                     </thead>
@@ -948,13 +959,40 @@
                             <% } %>
                         </td>
                         <td>
+                            <c:set var="availCount" value="0"/>
+                            <c:forEach var="avail" items="${doctor.availabilities}">
+                                <c:if test="${avail.available}">
+                                    <c:set var="availCount" value="${availCount + 1}"/>
+                                </c:if>
+                            </c:forEach>
+                            <span class="badge ${availCount > 0 ? 'bg-success' : 'bg-warning'}">
+                        ${availCount} jour(s) disponible(s)
+                    </span>
+                        </td>
+                        <td>
                             <div class="actions-cell">
+                                <!-- Bouton Assigner -->
                                 <a href="${pageContext.request.contextPath}/admin/doctors/assignment?action=showForm&doctorId=<%= doctor.getId() %>"
-                                   class="btn-assign">
+                                   class="btn-action assign-btn" title="Assigner un service">
                                     <i class="fas fa-link"></i> Assigner
                                 </a>
+
+                                <% if (Currentuser.getRole().equals(Role.ADMIN)) { %>
+                                <!-- Bouton pour ADMIN -->
+                                <a href="${pageContext.request.contextPath}/admin/availabilities/doctor/${doctor.id}"
+                                   class="btn-action admin-btn" title="Gérer les disponibilités">
+                                    <i class="fas fa-calendar-alt"></i> Disponibilités
+                                </a>
+                                <% } else if (doctor.getEmail().equals(Currentuser.getEmail())) { %>
+                                <!-- Bouton pour DOCTEUR connecté -->
+                                <a href="${pageContext.request.contextPath}/admin/availabilities/doctor/${doctor.id}"
+                                   class="btn-action doctor-btn" title="Gérer mes disponibilités">
+                                    <i class="fas fa-calendar-check"></i> Mes disponibilités
+                                </a>
+                                <% } %>
                             </div>
                         </td>
+
                     </tr>
                     <% } %>
                     </tbody>

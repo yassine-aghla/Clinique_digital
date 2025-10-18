@@ -798,7 +798,7 @@
 
         <div class="nav-section">
             <div class="nav-section-title">Gestion</div>
-            <a href="" class="nav-item">
+            <a href="${pageContext.request.contextPath}/admin/availabilities" class="nav-item">
                 <i class="fas fa-clock"></i>
                 <span>Disponibilités</span>
             </a>
@@ -831,7 +831,7 @@
                 <i class="fas fa-cog"></i>
                 <span>Paramètres</span>
             </a>
-            <a href="" class="nav-item">
+            <a href="${pageContext.request.contextPath}/logout" class="nav-item">
                 <i class="fas fa-sign-out-alt"></i>
                 <span>Déconnexion</span>
             </a>

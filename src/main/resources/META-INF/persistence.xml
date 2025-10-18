@@ -8,6 +8,7 @@
         <class>org.example.clinique_digital.entities.Specialty</class>
         <class>org.example.clinique_digital.entities.Patient</class>
         <class>org.example.clinique_digital.entities.Doctor</class>
+        <class>org.example.clinique_digital.entities.Availability</class>
 
         <properties>
             <!-- Connexion PostgreSQL -->
