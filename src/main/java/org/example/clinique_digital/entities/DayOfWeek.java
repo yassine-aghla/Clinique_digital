@@ -18,4 +18,21 @@ public enum DayOfWeek {
     public String getFrenchName() {
         return frenchName;
     }
+    public static DayOfWeek fromDate(java.time.LocalDate date) {
+        java.time.DayOfWeek jdkDayOfWeek = date.getDayOfWeek();
+        return switch (jdkDayOfWeek) {
+            case MONDAY -> MONDAY;
+            case TUESDAY -> TUESDAY;
+            case WEDNESDAY -> WEDNESDAY;
+            case THURSDAY -> THURSDAY;
+            case FRIDAY -> FRIDAY;
+            case SATURDAY -> SATURDAY;
+            case SUNDAY -> SUNDAY;
+        };
+    }
+
+
+    public int getIndex() {
+        return this.ordinal() + 1;
+    }
 }

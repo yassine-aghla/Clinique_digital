@@ -1,3 +1,4 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page import="org.example.clinique_digital.entities.User" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -781,11 +782,26 @@
                 <i class="fas fa-home"></i>
                 <span>Tableau de Bord</span>
             </a>
-            <a href="" class="nav-item">
+            <a href="${pageContext.request.contextPath}/appointments" class="nav-item">
                 <i class="fas fa-calendar-alt"></i>
                 <span>Rendez-vous</span>
-                <span class="nav-badge">12</span>
             </a>
+
+            <!-- Pour les patients, ajoutez également : -->
+            <c:if test="${user.role == 'PATIENT'}">
+                <a href="${pageContext.request.contextPath}/appointments/my-appointments" class="nav-item">
+                    <i class="fas fa-calendar-check"></i>
+                    <span>Mes Rendez-vous</span>
+                </a>
+            </c:if>
+
+            <!-- Pour les docteurs, ajoutez : -->
+            <c:if test="${user.role == 'DOCTOR'}">
+                <a href="${pageContext.request.contextPath}/appointments/doctor-schedule" class="nav-item">
+                    <i class="fas fa-calendar-week"></i>
+                    <span>Mon Planning</span>
+                </a>
+            </c:if>
             <a href="" class="nav-item">
                 <i class="fas fa-users"></i>
                 <span>Patients</span>

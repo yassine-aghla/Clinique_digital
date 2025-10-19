@@ -763,7 +763,7 @@
                 <i class="fas fa-home"></i>
                 <span>Tableau de Bord</span>
             </a>
-            <a href="appointments" class="nav-item">
+            <a href="${pageContext.request.contextPath}/appointments" class="nav-item">
                 <i class="fas fa-calendar-alt"></i>
                 <span>Rendez-vous</span>
                 <span class="nav-badge">12</span>

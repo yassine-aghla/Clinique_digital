@@ -3,13 +3,16 @@ package org.example.clinique_digital.entities;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "patients")
 @PrimaryKeyJoinColumn(name = "user_id")
 public class Patient extends User {
-
+    @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Appointment> appointments = new ArrayList<>();
     @Column(unique = true, nullable = false, length = 20)
     private String cin;
 
@@ -62,5 +65,13 @@ public class Patient extends User {
 
     public enum Sexe {
         MASCULIN, FEMININ
+    }
+
+    public List<Appointment> getAppointments() {
+        return appointments;
+    }
+
+    public void setAppointments(List<Appointment> appointments) {
+        this.appointments = appointments;
     }
 }

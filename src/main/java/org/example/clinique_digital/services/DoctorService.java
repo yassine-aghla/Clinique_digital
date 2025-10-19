@@ -121,4 +121,33 @@ public class DoctorService {
         }
     }
 
+    public List<Doctor> getDoctorsBySpecialty(Long specialtyId) {
+        EntityManager em = emf.createEntityManager();
+        try {
+            TypedQuery<Doctor> query = em.createQuery(
+                    "SELECT d FROM Doctor d LEFT JOIN FETCH d.departement LEFT JOIN FETCH d.specialite " +
+                            "WHERE d.specialite.id = :specialtyId ORDER BY d.nom",
+                    Doctor.class
+            );
+            query.setParameter("specialtyId", specialtyId);
+            return query.getResultList();
+        } finally {
+            em.close();
+        }
+    }
+
+    public Doctor getDoctorByIdWithAvailabilities(Long doctorId) {
+        EntityManager em = emf.createEntityManager();
+        try {
+            TypedQuery<Doctor> query = em.createQuery(
+                    "SELECT d FROM Doctor d LEFT JOIN FETCH d.availabilities WHERE d.id = :doctorId",
+                    Doctor.class
+            );
+            query.setParameter("doctorId", doctorId);
+            return query.getResultStream().findFirst().orElse(null);
+        } finally {
+            em.close();
+        }
+    }
+
 }

@@ -9,7 +9,7 @@
         <class>org.example.clinique_digital.entities.Patient</class>
         <class>org.example.clinique_digital.entities.Doctor</class>
         <class>org.example.clinique_digital.entities.Availability</class>
-
+      <class>org.example.clinique_digital.entities.Appointment</class>
         <properties>
             <!-- Connexion PostgreSQL -->
             <property name="jakarta.persistence.jdbc.driver" value="org.postgresql.Driver"/>
