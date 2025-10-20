@@ -638,19 +638,27 @@
     <nav class="nav-menu">
         <div class="nav-section">
             <div class="nav-section-title">Principal</div>
-            <a href="dashboard" class="nav-item">
+            <a href="${pageContext.request.contextPath}/dashboard" class="nav-item">
                 <i class="fas fa-home"></i>
                 <span>Tableau de Bord</span>
             </a>
-            <a href="appointments" class="nav-item">
-                <i class="fas fa-calendar-alt"></i>
-                <span>Rendez-vous</span>
-            </a>
-            <a href="patients" class="nav-item">
-                <i class="fas fa-users"></i>
-                <span>Patients</span>
-            </a>
-            <a href="doctors" class="nav-item">
+            <!-- Pour les patients, ajoutez également : -->
+            <c:if test="${user.role == 'PATIENT'}">
+                <a href="${pageContext.request.contextPath}/appointments/my-appointments" class="nav-item">
+                    <i class="fas fa-calendar-check"></i>
+                    <span>Mes Rendez-vous</span>
+                </a>
+            </c:if>
+
+            <!-- Pour les docteurs, ajoutez : -->
+            <c:if test="${user.role == 'DOCTOR'}">
+                <a href="${pageContext.request.contextPath}/appointments/doctor-schedule" class="nav-item">
+                    <i class="fas fa-calendar-week"></i>
+                    <span>Mon Planning</span>
+                </a>
+            </c:if>
+
+            <a href="${pageContext.request.contextPath}/doctors" class="nav-item">
                 <i class="fas fa-user-md"></i>
                 <span>Docteurs</span>
             </a>
@@ -658,38 +666,28 @@
 
         <div class="nav-section">
             <div class="nav-section-title">Gestion</div>
-            <a href="${pageContext.request.contextPath}/admin/availabilities" class="nav-item">
+            <a href="${pageContext.request.contextPath}/admin/availabilities" class="nav-item active">
                 <i class="fas fa-clock"></i>
                 <span>Disponibilités</span>
             </a>
-            <a href="departments" class="nav-item active">
+            <a href="${pageContext.request.contextPath}/admin/users" class="nav-item">
+                <i class="fas fa-users"></i>
+                <span>Users</span>
+            </a>
+            <a href="${pageContext.request.contextPath}/departments" class="nav-item">
                 <i class="fas fa-hospital"></i>
                 <span>Départements</span>
             </a>
-            <a href="specialties" class="nav-item">
+            <a href="${pageContext.request.contextPath}/specialties" class="nav-item">
                 <i class="fas fa-stethoscope"></i>
                 <span>Spécialités</span>
             </a>
-            <a href="${pageContext.request.contextPath}/admin/users" class="nav-item">
-                <i class="fas fa-users-cog"></i>
-                <span>Utilisateurs</span>
-            </a>
-            <a href="medical-notes" class="nav-item">
-                <i class="fas fa-file-medical"></i>
-                <span>Notes Médicales</span>
-            </a>
+
         </div>
 
         <div class="nav-section">
-            <div class="nav-section-title">Système</div>
-            <a href="reports" class="nav-item">
-                <i class="fas fa-chart-bar"></i>
-                <span>Rapports</span>
-            </a>
-            <a href="settings" class="nav-item">
-                <i class="fas fa-cog"></i>
-                <span>Paramètres</span>
-            </a>
+
+
             <a href="${pageContext.request.contextPath}/logout" class="nav-item">
                 <i class="fas fa-sign-out-alt"></i>
                 <span>Déconnexion</span>
@@ -697,7 +695,6 @@
         </div>
     </nav>
 </aside>
-
 <!-- Main Content -->
 <div class="main-content">
     <!-- Top Bar -->

@@ -231,4 +231,65 @@ public class AppointmentService {
 
         return query.getSingleResult() > 0;
     }
+
+
+
+
+    public String getDoctorSpecialiteName(Long doctorId) {
+        EntityManager em = emf.createEntityManager();
+        try {
+            TypedQuery<String> query = em.createQuery(
+                    "SELECT s.name FROM Doctor d " +
+                            "LEFT JOIN d.specialite s " +
+                            "WHERE d.id = :doctorId",
+                    String.class
+            );
+            query.setParameter("doctorId", doctorId);
+
+            String result = query.getSingleResult();
+            return result != null ? result : "Spécialité non définie";
+
+        } catch (NoResultException e) {
+            return "Spécialité non définie";
+        } finally {
+            em.close();
+        }
+    }
+
+
+    public boolean updateAppointmentStatus(Long appointmentId, AppointmentStatus status) {
+        EntityManager em = emf.createEntityManager();
+        EntityTransaction transaction = em.getTransaction();
+
+        try {
+            transaction.begin();
+
+            Appointment appointment = em.find(Appointment.class, appointmentId);
+            if (appointment != null) {
+                System.out.println("Updating appointment " + appointmentId + " from " +
+                        appointment.getStatus() + " to " + status);
+
+                appointment.setStatus(status);
+                em.merge(appointment);
+                transaction.commit();
+
+                System.out.println("Appointment status updated successfully");
+                return true;
+            } else {
+                System.out.println("Appointment not found with id: " + appointmentId);
+                transaction.rollback();
+                return false;
+            }
+
+        } catch (Exception e) {
+            if (transaction.isActive()) {
+                transaction.rollback();
+            }
+            System.err.println("Error updating appointment status: " + e.getMessage());
+            e.printStackTrace();
+            throw new RuntimeException("Erreur lors de la mise à jour du statut: " + e.getMessage(), e);
+        } finally {
+            em.close();
+        }
+    }
 }

@@ -35,6 +35,10 @@ public class User {
     public String getNom() { return nom; }
     public void setNom(String nom) { this.nom = nom; }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
 
@@ -46,4 +50,16 @@ public class User {
 
     public boolean isStatus() { return status; }
     public void setStatus(boolean status) { this.status = status; }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", nom='" + nom + '\'' +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", role=" + role +
+                ", status=" + status +
+                '}';
+    }
 }
